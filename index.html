@@ -47,6 +47,9 @@
             const inSprite = new PIXI.Sprite(assets.inImg)
             const outSprite = new PIXI.Sprite(assets.outImg)
             const graphicsArray = createGraphics()
+            const graphicsAnmations = graphicsAnmation(graphicsArray)
+
+            console.log(graphicsAnmations)
 
             app.stage.addChild(container)
             container.addChild(inSprite)
@@ -78,21 +81,68 @@
             setContainer(container)
             setInSprite(inSprite, container)
 
-            ContainerEvent(container)
-
+            ContainerEvent(container, app)
 
             // container.x = container.x + 200
             // container.y = container.y + 200
             // container.scale = { x: 0.5, y: 0.5 } //一定要在后面缩小，不然计算就不对了
-            anmation(container, inSprite, outSprite)
+            inSpriteAnmation(inSprite)
 
         }
 
-        function ContainerEvent(container) {
+        function ContainerEvent(container, app) {
             container.on('mousedown', (e) => {
-                // console.log(e.global.x, e.global.y)
                 console.log(`${parseInt(e.global.x)},${parseInt(e.global.y)}`)
             })
+
+            let stop = true
+            let containerRotation = 0
+            let startPoint = null
+            let startPointGlobal = null
+
+            container.on('mousedown', function (e) {
+                console.log('mousedown')
+                stop = false
+                startPoint = { x: e.x, y: e.y }
+                startPointGlobal = {
+                    x: e.global.x - 400,
+                    y: e.global.y - 400
+                }
+            })
+
+            container.on('mousemove', function (e) {
+
+                if (stop) return
+                const { global: globalPoint } = e
+                if (startPointGlobal.y >= 0) {
+                    if (globalPoint.x - startPoint.x < 0) {
+                        containerRotation += 0.001
+                    } else if (globalPoint.x - startPoint.x > 0) {
+                        containerRotation -= 0.001
+                    }
+                } else {
+                    if (globalPoint.x - startPoint.x < 0) {
+                        containerRotation -= 0.001
+                    } else if (globalPoint.x - startPoint.x > 0) {
+                        containerRotation += 0.001
+                    }
+                }
+
+            })
+
+            container.on('mouseup', function (e) {
+                console.log('mouseup')
+                stop = true
+                startPoint = null
+            })
+
+            app.ticker.add(() => {
+
+                if (!stop) {
+                    container.rotation = containerRotation
+                }
+
+            });
         }
 
 
@@ -116,19 +166,22 @@
         }
 
 
-
-
-        function anmation(container, inSprite, outSprite) {
+        function inSpriteAnmation(inSprite) {
             gsap.fromTo(inSprite, {
                 rotation: 0,
             }, {
                 rotation: 2 * Math.PI,
                 ease: 'linear',
                 repeat: -1,
-                duration: 1.5,
+                duration: 3,
             })
-        }
 
+            const filter = new PIXI.filters.BlurFilter()
+            inSprite.filters = [filter];
+            gsap.to(filter, {
+                blur: 1, duration: 2, yoyo: true, repeat: -1,
+            });
+        }
 
         function createGraphics() {
             const graphics1 = new PIXI.Graphics()
@@ -219,7 +272,19 @@
 
             return [graphics1, graphics2, graphics3, graphics4, graphics5, graphics6, graphics7, graphics8]
         }
+        function graphicsAnmation(graphicsArray) {
+            return graphicsArray.map((graphics) => {
+                return gsap.fromTo(graphics, {
+                    alpha: 0
+                }, {
+                    alpha: 0.9,
+                    duration: 0.8,
+                    paused: true
+                })
+            })
 
+
+        }
 
 
     </script>
