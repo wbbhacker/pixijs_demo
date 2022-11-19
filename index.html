@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+    <script src="https://pixijs.download/release/pixi.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+
+</head>
+
+<body>
+    <div id="content"></div>
+
+    <script>
+        const { Assets } = PIXI
+        console.log(PIXI)
+        console.log(gsap)
+        init()
+
+        async function init() {
+
+            Assets.add('inImg', 'img/in.png?a=1')
+            Assets.add('outImg', 'img/out.png?a=2')
+            const assets = await Assets.load(['inImg', 'outImg'])
+            const app = new PIXI.Application({ background: '#ffffff', width: document.body.offsetWidth, height: document.body.offsetHeight })
+            document.getElementById('content').appendChild(app.view)
+
+
+
+            const container = new PIXI.Container()
+            const inSprite = new PIXI.Sprite(assets.inImg)
+            const outSprite = new PIXI.Sprite(assets.outImg)
+            const graphicsArray = createGraphics()
+
+            app.stage.addChild(container)
+            container.addChild(inSprite)
+            container.addChild(outSprite)
+
+            graphicsArray.forEach((graphics, idx) => {
+                graphics.interactive = true
+                graphics.cursor = 'pointer'
+                graphics.alpha = 0
+                container.addChild(graphics)
+
+                graphics.on('mouseenter', (function (i) {
+                    return function () {
+                        graphics.alpha = 0
+                        graphicsArray.forEach((item, idx) => {
+                            if (idx !== i) {
+                                item.alpha = 1
+                            }
+                        })
+                    }
+                })(idx))
+                graphics.on('mouseleave', () => {
+                    graphicsArray.forEach((item) => {
+                        item.alpha = 0
+                    })
+                })
+            })
+
+            setContainer(container)
+            setInSprite(inSprite, container)
+
+            ContainerEvent(container)
+
+
+            // container.x = container.x + 200
+            // container.y = container.y + 200
+            // container.scale = { x: 0.5, y: 0.5 } //一定要在后面缩小，不然计算就不对了
+            anmation(container, inSprite, outSprite)
+
+        }
+
+        function ContainerEvent(container) {
+            container.on('mousedown', (e) => {
+                // console.log(e.global.x, e.global.y)
+                console.log(`${parseInt(e.global.x)},${parseInt(e.global.y)}`)
+            })
+        }
+
+
+        function setInSprite(inSprite, container) {
+
+            inSprite.x = container.width / 2
+            inSprite.y = container.height / 2 + 20
+            inSprite.pivot.x = inSprite.width / 2
+            inSprite.pivot.y = inSprite.height / 2
+            console.log(inSprite)
+        }
+
+        function setContainer(container) {
+            container.pivot.x = container.width / 2
+            container.pivot.y = container.height / 2
+            container.x = container.width / 2
+            container.y = container.height / 2
+            container.interactive = true
+            container.cursor = 'pointer'
+            console.log(container)
+        }
+
+
+
+
+        function anmation(container, inSprite, outSprite) {
+            gsap.fromTo(inSprite, {
+                rotation: 0,
+            }, {
+                rotation: 2 * Math.PI,
+                ease: 'linear',
+                repeat: -1,
+                duration: 1.5,
+            })
+        }
+
+
+        function createGraphics() {
+            const graphics1 = new PIXI.Graphics()
+            graphics1.beginFill(0xFFFFFF, 0.9)
+            graphics1.moveTo(452, 373)
+            graphics1.lineTo(555, 373)
+            graphics1.lineTo(713, 0)
+            graphics1.lineTo(298, 0)
+            graphics1.closePath()
+            graphics1.endFill()
+
+            const graphics2 = new PIXI.Graphics()
+            graphics2.beginFill(0xFFFFFF, 0.9)
+            graphics2.moveTo(555, 373)
+            graphics2.lineTo(713, 0)
+            graphics2.lineTo(988, 301)
+            graphics2.lineTo(628, 446)
+            graphics2.closePath()
+            graphics2.endFill()
+
+
+            const graphics3 = new PIXI.Graphics()
+            graphics3.beginFill(0xFFFFFF, 0.9)
+            graphics3.moveTo(628, 446)
+            graphics3.lineTo(1000, 295)
+            graphics3.lineTo(1000, 700)
+            graphics3.lineTo(628, 551)
+            graphics3.closePath()
+            graphics3.endFill()
+
+
+
+            const graphics4 = new PIXI.Graphics()
+            graphics4.beginFill(0xFFFFFF, 0.9)
+            graphics4.moveTo(628, 551)
+            graphics4.lineTo(1000, 700)
+            graphics4.lineTo(915, 871)
+            graphics4.lineTo(722, 951)
+            graphics4.lineTo(664, 887)
+            graphics4.lineTo(555, 624)
+            graphics4.closePath()
+            graphics4.endFill()
+
+
+            const graphics5 = new PIXI.Graphics()
+            graphics5.beginFill(0xFFFFFF, 0.9)
+            graphics5.moveTo(555, 624)
+            graphics5.lineTo(452, 622)
+            graphics5.lineTo(342, 889)
+            graphics5.lineTo(348, 959)
+            graphics5.lineTo(500, 965)
+            graphics5.lineTo(724, 965)
+            graphics5.lineTo(664, 887)
+            graphics5.closePath()
+            graphics5.endFill()
+
+
+
+            const graphics6 = new PIXI.Graphics()
+            graphics6.beginFill(0xFFFFFF, 0.9)
+            graphics6.moveTo(452, 622)
+            graphics6.lineTo(377, 549)
+            graphics6.lineTo(0, 705)
+            graphics6.lineTo(96, 841)
+            graphics6.lineTo(344, 958)
+            graphics6.lineTo(343, 889)
+            graphics6.closePath()
+            graphics6.endFill()
+
+            const graphics7 = new PIXI.Graphics()
+            graphics7.beginFill(0xFFFFFF, 0.9)
+            graphics7.moveTo(0, 705)
+            graphics7.lineTo(377, 549)
+            graphics7.lineTo(378, 445)
+            graphics7.lineTo(0, 290)
+            graphics7.closePath()
+            graphics7.endFill()
+            const graphics8 = new PIXI.Graphics()
+            graphics8.beginFill(0xFFFFFF, 0.9)
+            graphics8.moveTo(378, 445)
+            graphics8.lineTo(452, 373)
+            graphics8.lineTo(298, 0)
+            graphics8.lineTo(91, 80)
+            graphics8.lineTo(0, 290)
+            graphics8.closePath()
+            graphics8.endFill()
+
+
+            return [graphics1, graphics2, graphics3, graphics4, graphics5, graphics6, graphics7, graphics8]
+        }
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>
