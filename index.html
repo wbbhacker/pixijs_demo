@@ -33,8 +33,7 @@
         console.log(gsap)
         init()
 
-        let anTime = 2
-
+        let anTime = 0.7
         async function init() {
 
             Assets.add('inImg', 'img/in.png?a=1')
@@ -49,9 +48,10 @@
             const inSprite = new PIXI.Sprite(assets.inImg)
             const outSprite = new PIXI.Sprite(assets.outImg)
             const graphicsArray = createGraphics()
-            const graphicsAnmations = graphicsAnmation(graphicsArray)
+            const graphicsAnmationsShow = graphicsAnmationShow(graphicsArray)
+            const graphicsAnmationsHidden = graphicsAnmationHidden(graphicsArray)
 
-            console.log(graphicsAnmations)
+
 
             app.stage.addChild(container)
             container.addChild(inSprite)
@@ -62,22 +62,25 @@
                 graphics.cursor = 'pointer'
                 graphics.alpha = 0
                 container.addChild(graphics)
+                graphics.on('mouseenter', function () {
+                    console.log('mouseenter')
+                    graphicsAnmationsHidden[idx].restart()
+                    graphicsAnmationsShow.forEach((item, idxO) => {
+                        if (idxO !== idx) {
+                            item.restart()
+                        }
+                    })
+                })
 
-                graphics.on('mouseenter', (function (i) {
-                    return function () {
-                        graphicsAnmations[idx].seek(anTime).play()
-                        graphicsAnmations.forEach((item, idx) => {
-                            if (idx !== i) {
-                                item.reverse()
-                            }
-                        })
-                    }
-                })(idx))
-                // graphics.on('mouseleave', () => {
-                //     console.log('mouseleave', idx)
-                //     graphicsAnmations[idx].seek(0).play()
-                // })
+                graphics.on('mouseleave', () => {
+                    console.log('mouseleave')
+                    graphicsAnmationsHidden.forEach((item) => {
+                        item.restart()
+                    })
+                })
             })
+
+
 
             setContainer(container)
             setInSprite(inSprite, container)
@@ -273,15 +276,28 @@
 
             return [graphics1, graphics2, graphics3, graphics4, graphics5, graphics6, graphics7, graphics8]
         }
-        function graphicsAnmation(graphicsArray) {
+        function graphicsAnmationShow(graphicsArray) {
             return graphicsArray.map((graphics) => {
                 return gsap.fromTo(graphics, {
                     alpha: 0
                 }, {
                     alpha: 0.9,
                     duration: anTime,
-                    repeat: 1,
-                    yoyo: true,
+                    paused: true
+                })
+            })
+
+
+        }
+
+
+        function graphicsAnmationHidden(graphicsArray) {
+            return graphicsArray.map((graphics) => {
+                return gsap.fromTo(graphics, {
+                    alpha: 0.9
+                }, {
+                    alpha: 0,
+                    duration: anTime,
                     paused: true
                 })
             })
