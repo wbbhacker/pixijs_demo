@@ -33,6 +33,8 @@
         console.log(gsap)
         init()
 
+        let anTime = 2
+
         async function init() {
 
             Assets.add('inImg', 'img/in.png?a=1')
@@ -63,19 +65,18 @@
 
                 graphics.on('mouseenter', (function (i) {
                     return function () {
-                        graphics.alpha = 0
-                        graphicsArray.forEach((item, idx) => {
+                        graphicsAnmations[idx].seek(anTime).play()
+                        graphicsAnmations.forEach((item, idx) => {
                             if (idx !== i) {
-                                item.alpha = 1
+                                item.reverse()
                             }
                         })
                     }
                 })(idx))
-                graphics.on('mouseleave', () => {
-                    graphicsArray.forEach((item) => {
-                        item.alpha = 0
-                    })
-                })
+                // graphics.on('mouseleave', () => {
+                //     console.log('mouseleave', idx)
+                //     graphicsAnmations[idx].seek(0).play()
+                // })
             })
 
             setContainer(container)
@@ -278,7 +279,9 @@
                     alpha: 0
                 }, {
                     alpha: 0.9,
-                    duration: 0.8,
+                    duration: anTime,
+                    repeat: 1,
+                    yoyo: true,
                     paused: true
                 })
             })
