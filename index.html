@@ -33,7 +33,8 @@
         console.log(gsap)
         init()
 
-        let anTime = 0.7
+        let anTime = 0.7 // 白色蒙层动画时间
+        let containerRotation = 0 // container 转的角度
         async function init() {
 
             Assets.add('inImg', 'img/in.png?a=1')
@@ -87,10 +88,9 @@
 
             ContainerEvent(container, app)
 
-            // container.x = container.x + 200
-            // container.y = container.y + 200
-            // container.scale = { x: 0.5, y: 0.5 } //一定要在后面缩小，不然计算就不对了
+            container.scale = { x: 0.7, y: 0.7 } //一定要在后面缩小，不然计算就不对了
             inSpriteAnmation(inSprite)
+            containerAnmation(container)
 
         }
 
@@ -100,7 +100,7 @@
             })
 
             let stop = true
-            let containerRotation = 0
+
             let startPoint = null
             let startPointGlobal = null
 
@@ -189,7 +189,7 @@
 
         function createGraphics() {
             const graphics1 = new PIXI.Graphics()
-            graphics1.beginFill(0xFFFFFF, 0.9)
+            graphics1.beginFill(0xFFFFFF, 1)
             graphics1.moveTo(452, 373)
             graphics1.lineTo(555, 373)
             graphics1.lineTo(713, 0)
@@ -198,7 +198,7 @@
             graphics1.endFill()
 
             const graphics2 = new PIXI.Graphics()
-            graphics2.beginFill(0xFFFFFF, 0.9)
+            graphics2.beginFill(0xFFFFFF, 1)
             graphics2.moveTo(555, 373)
             graphics2.lineTo(713, 0)
             graphics2.lineTo(988, 301)
@@ -208,7 +208,7 @@
 
 
             const graphics3 = new PIXI.Graphics()
-            graphics3.beginFill(0xFFFFFF, 0.9)
+            graphics3.beginFill(0xFFFFFF, 1)
             graphics3.moveTo(628, 446)
             graphics3.lineTo(1000, 295)
             graphics3.lineTo(1000, 700)
@@ -219,7 +219,7 @@
 
 
             const graphics4 = new PIXI.Graphics()
-            graphics4.beginFill(0xFFFFFF, 0.9)
+            graphics4.beginFill(0xFFFFFF, 1)
             graphics4.moveTo(628, 551)
             graphics4.lineTo(1000, 700)
             graphics4.lineTo(915, 871)
@@ -231,7 +231,7 @@
 
 
             const graphics5 = new PIXI.Graphics()
-            graphics5.beginFill(0xFFFFFF, 0.9)
+            graphics5.beginFill(0xFFFFFF, 1)
             graphics5.moveTo(555, 624)
             graphics5.lineTo(452, 622)
             graphics5.lineTo(342, 889)
@@ -245,7 +245,7 @@
 
 
             const graphics6 = new PIXI.Graphics()
-            graphics6.beginFill(0xFFFFFF, 0.9)
+            graphics6.beginFill(0xFFFFFF, 1)
             graphics6.moveTo(452, 622)
             graphics6.lineTo(377, 549)
             graphics6.lineTo(0, 705)
@@ -256,7 +256,7 @@
             graphics6.endFill()
 
             const graphics7 = new PIXI.Graphics()
-            graphics7.beginFill(0xFFFFFF, 0.9)
+            graphics7.beginFill(0xFFFFFF, 1)
             graphics7.moveTo(0, 705)
             graphics7.lineTo(377, 549)
             graphics7.lineTo(378, 445)
@@ -264,7 +264,7 @@
             graphics7.closePath()
             graphics7.endFill()
             const graphics8 = new PIXI.Graphics()
-            graphics8.beginFill(0xFFFFFF, 0.9)
+            graphics8.beginFill(0xFFFFFF, 1)
             graphics8.moveTo(378, 445)
             graphics8.lineTo(452, 373)
             graphics8.lineTo(298, 0)
@@ -304,7 +304,27 @@
 
 
         }
-
+        function containerAnmation(container) {
+            gsap.fromTo(container.scale, {
+                x: 0.1,
+                y: 0.1,
+            }, {
+                x: 0.7,
+                y: 0.7,
+                duration: 1.2
+            })
+            gsap.fromTo(container, {
+                rotation: 0,
+                alpha: 0.2,
+            }, {
+                alpha: 1,
+                rotation: 7,
+                duration: 1.5,
+                onComplete: function () {
+                    containerRotation = container.rotation
+                }
+            })
+        }
 
     </script>
 
