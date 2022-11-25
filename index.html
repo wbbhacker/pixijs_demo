@@ -38,7 +38,7 @@
         async function init() {
 
             Assets.add('inImg', 'img/in.png?a=1')
-            Assets.add('outImg', 'img/out1.png?a=2')
+            Assets.add('outImg', 'img/out1.png?a=4')
             Assets.add('outImg1', 'img/out2.png')
 
             Assets.add('line1', 'img/line1.png')
@@ -62,31 +62,35 @@
             const container1 = new PIXI.Container()
             const inSprite = new PIXI.Sprite(assets.inImg)
             const outSprite = new PIXI.Sprite(assets.outImg)
-            const outSprite1 = new PIXI.Sprite(assets.outImg1)
+
 
             const graphicsArray = createGraphics()
 
 
 
             app.stage.addChild(container)
-            app.stage.addChild(container1)
+
             container.addChild(inSprite)
             container.addChild(outSprite)
-            graphicsAn(graphicsArray, container)
 
 
             setContainer(container)
 
 
-            console.log(container)
-
+            const outSprite1 = new PIXI.Sprite(assets.outImg1)
+            app.stage.addChild(container1)
             container1.addChild(outSprite1)
+            outSprite1.alpha = 0
             container1.x = container.x
             container1.y = container.y
             container1.pivot.x = container1.width / 2
             container1.pivot.y = container1.height / 2
             container1.scale = { x: 0.7, y: 0.7 }
 
+            const linesAll = lines(container1, assets)
+
+
+            graphicsAn(graphicsArray, container, linesAll)
 
             setInSprite(inSprite, container)
 
@@ -97,14 +101,61 @@
 
         }
         function lines(container, assets) {
-            console.log(container)
             const line1 = new PIXI.Sprite(assets.line1)
-            line1.scale = { x: 0.8, y: 0.8 }
-            line1.x = 350
-            line1.y = 100
+            line1.x = 335
+            line1.y = 0
+            line1.scale = { x: 1.37, y: 1.37 }
             container.addChild(line1)
+
+            const line2 = new PIXI.Sprite(assets.line2)
+            line2.x = 750
+            line2.y = 50
+            line2.scale = { x: 1.37, y: 1.37 }
+            container.addChild(line2)
+
+
+            const line3 = new PIXI.Sprite(assets.line3)
+            line3.x = 1016
+            line3.y = 350
+            line3.scale = { x: 1.37, y: 1.37 }
+            container.addChild(line3)
+
+            const line4 = new PIXI.Sprite(assets.line4)
+            line4.x = 740
+            line4.y = 750
+            line4.scale = { x: 1.37, y: 1.37 }
+            container.addChild(line4)
+
+
+            const line5 = new PIXI.Sprite(assets.line5)
+            line5.x = 350
+            line5.y = 1020
+            line5.scale = { x: 1.37, y: 1.37 }
+            container.addChild(line5)
+
+
+            const line6 = new PIXI.Sprite(assets.line6)
+            line6.x = 60
+            line6.y = 760
+            line6.scale = { x: 1.37, y: 1.37 }
+            container.addChild(line6)
+
+
+            const line7 = new PIXI.Sprite(assets.line7)
+            line7.x = 0
+            line7.y = 355
+            line7.scale = { x: 1.37, y: 1.37 }
+            container.addChild(line7)
+
+            const line8 = new PIXI.Sprite(assets.line8)
+            line8.x = 40
+            line8.y = 50
+            line8.scale = { x: 1.37, y: 1.37 }
+            container.addChild(line8)
+
+            return [line1, line2, line3, line4, line5, line6, line7, line8]
         }
-        function graphicsAn(graphicsArray, container) {
+        function graphicsAn(graphicsArray, container, linesAll) {
 
             const graphicsAnmationsShow = graphicsAnmationShow(graphicsArray)
             const graphicsAnmationsHidden = graphicsAnmationHidden(graphicsArray)
@@ -116,9 +167,11 @@
                 graphics.interactive = true
                 graphics.cursor = 'pointer'
                 graphics.alpha = 0
+                linesAll[idx].alpha = 0
                 container.addChild(graphics)
                 graphics.on('mouseenter', function () {
                     // console.log('mouseenter')
+                    linesAll[idx].alpha = 1
                     if (timer !== null) {
                         // console.log('clearTimeout')
                         clearTimeout(timer)
@@ -142,6 +195,7 @@
 
                 graphics.on('mouseleave', () => {
                     // console.log('mouseleave')
+                    linesAll[idx].alpha = 0
                     timer = setTimeout(() => {
                         // console.log('timer')
                         graphicsAnmationsHidden.forEach((graphics, i) => {
@@ -293,7 +347,7 @@
 
             const graphics5 = new PIXI.Graphics()
             graphics5.beginFill(0xFFFFFF, 1)
-            graphics5.moveTo(555, 624)
+            graphics5.moveTo(556, 623)
             graphics5.lineTo(452, 622)
             graphics5.lineTo(342, 889)
             graphics5.lineTo(348, 959)
@@ -308,7 +362,7 @@
             const graphics6 = new PIXI.Graphics()
             graphics6.beginFill(0xFFFFFF, 1)
             graphics6.moveTo(452, 622)
-            graphics6.lineTo(377, 549)
+            graphics6.lineTo(380, 548)
             graphics6.lineTo(0, 705)
             graphics6.lineTo(96, 841)
             graphics6.lineTo(344, 958)
@@ -319,14 +373,14 @@
             const graphics7 = new PIXI.Graphics()
             graphics7.beginFill(0xFFFFFF, 1)
             graphics7.moveTo(0, 705)
-            graphics7.lineTo(377, 549)
-            graphics7.lineTo(378, 445)
+            graphics7.lineTo(380, 549)
+            graphics7.lineTo(380, 445)
             graphics7.lineTo(0, 290)
             graphics7.closePath()
             graphics7.endFill()
             const graphics8 = new PIXI.Graphics()
             graphics8.beginFill(0xFFFFFF, 1)
-            graphics8.moveTo(378, 445)
+            graphics8.moveTo(380, 445)
             graphics8.lineTo(452, 373)
             graphics8.lineTo(298, 0)
             graphics8.lineTo(91, 80)
