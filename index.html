@@ -38,7 +38,7 @@
         async function init() {
 
             Assets.add('inImg', 'img/in.png?a=1')
-            Assets.add('outImg', 'img/out.png?a=2')
+            Assets.add('outImg', 'img/out1.png?a=2')
             const assets = await Assets.load(['inImg', 'outImg'])
             const app = new PIXI.Application({ background: '#ffffff', width: document.body.offsetWidth, height: document.body.offsetHeight })
             document.getElementById('content').appendChild(app.view)
@@ -49,38 +49,13 @@
             const inSprite = new PIXI.Sprite(assets.inImg)
             const outSprite = new PIXI.Sprite(assets.outImg)
             const graphicsArray = createGraphics()
-            const graphicsAnmationsShow = graphicsAnmationShow(graphicsArray)
-            const graphicsAnmationsHidden = graphicsAnmationHidden(graphicsArray)
 
 
 
             app.stage.addChild(container)
             container.addChild(inSprite)
             container.addChild(outSprite)
-
-            graphicsArray.forEach((graphics, idx) => {
-                graphics.interactive = true
-                graphics.cursor = 'pointer'
-                graphics.alpha = 0
-                container.addChild(graphics)
-                graphics.on('mouseenter', function () {
-                    console.log('mouseenter')
-                    graphicsAnmationsHidden[idx].restart()
-                    graphicsAnmationsShow.forEach((item, idxO) => {
-                        if (idxO !== idx) {
-                            item.restart()
-                        }
-                    })
-                })
-
-                graphics.on('mouseleave', () => {
-                    console.log('mouseleave')
-                    graphicsAnmationsHidden.forEach((item) => {
-                        item.restart()
-                    })
-                })
-            })
-
+            graphicsAn(graphicsArray, container)
 
 
             setContainer(container)
@@ -94,6 +69,58 @@
 
         }
 
+        function graphicsAn(graphicsArray, container) {
+
+            const graphicsAnmationsShow = graphicsAnmationShow(graphicsArray)
+            const graphicsAnmationsHidden = graphicsAnmationHidden(graphicsArray)
+
+            let prev = null
+            let timer = null
+            graphicsArray.forEach((graphics, idx) => {
+
+                graphics.interactive = true
+                graphics.cursor = 'pointer'
+                graphics.alpha = 0
+                container.addChild(graphics)
+                graphics.on('mouseenter', function () {
+                    console.log('mouseenter')
+                    if (timer !== null) {
+                        console.log('clearTimeout')
+                        clearTimeout(timer)
+                    }
+                    if (prev === null) {
+                        graphicsAnmationsHidden[idx].restart()
+
+                        graphicsAnmationsShow.forEach((graphics, i) => {
+                            if (i !== idx) {
+                                graphics.restart()
+                            }
+                        })
+                        prev = idx
+
+                    } else {
+                        graphicsAnmationsHidden[idx].restart()
+                        graphicsAnmationsShow[prev].restart()
+                        prev = idx
+                    }
+                })
+
+                graphics.on('mouseleave', () => {
+                    console.log('mouseleave')
+                    timer = setTimeout(() => {
+                        console.log('timer')
+                        graphicsAnmationsHidden.forEach((graphics, i) => {
+                            if (i !== prev) {
+                                graphics.restart()
+                            }
+                        })
+                        prev = null
+                    }, 200)
+                })
+            })
+
+        }
+
         function ContainerEvent(container, app) {
             container.on('mousedown', (e) => {
                 console.log(`${parseInt(e.global.x)},${parseInt(e.global.y)}`)
@@ -103,6 +130,8 @@
 
             let startPoint = null
             let startPointGlobal = null
+
+            const SPEED = 0.002
 
             container.on('mousedown', function (e) {
                 console.log('mousedown')
@@ -120,15 +149,15 @@
                 const { global: globalPoint } = e
                 if (startPointGlobal.y >= 0) {
                     if (globalPoint.x - startPoint.x < 0) {
-                        containerRotation += 0.001
+                        containerRotation += SPEED
                     } else if (globalPoint.x - startPoint.x > 0) {
-                        containerRotation -= 0.001
+                        containerRotation -= SPEED
                     }
                 } else {
                     if (globalPoint.x - startPoint.x < 0) {
-                        containerRotation -= 0.001
+                        containerRotation -= SPEED
                     } else if (globalPoint.x - startPoint.x > 0) {
-                        containerRotation += 0.001
+                        containerRotation += SPEED
                     }
                 }
 
@@ -149,14 +178,12 @@
             });
         }
 
-
         function setInSprite(inSprite, container) {
 
             inSprite.x = container.width / 2
             inSprite.y = container.height / 2 + 20
             inSprite.pivot.x = inSprite.width / 2
             inSprite.pivot.y = inSprite.height / 2
-            console.log(inSprite)
         }
 
         function setContainer(container) {
@@ -166,9 +193,7 @@
             container.y = container.height / 2
             container.interactive = true
             container.cursor = 'pointer'
-            console.log(container)
         }
-
 
         function inSpriteAnmation(inSprite) {
             gsap.fromTo(inSprite, {
@@ -276,6 +301,7 @@
 
             return [graphics1, graphics2, graphics3, graphics4, graphics5, graphics6, graphics7, graphics8]
         }
+
         function graphicsAnmationShow(graphicsArray) {
             return graphicsArray.map((graphics) => {
                 return gsap.fromTo(graphics, {
@@ -290,7 +316,6 @@
 
         }
 
-
         function graphicsAnmationHidden(graphicsArray) {
             return graphicsArray.map((graphics) => {
                 return gsap.fromTo(graphics, {
@@ -304,6 +329,7 @@
 
 
         }
+
         function containerAnmation(container) {
             gsap.fromTo(container.scale, {
                 x: 0.1,
