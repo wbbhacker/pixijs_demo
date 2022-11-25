@@ -29,8 +29,8 @@
 
     <script>
         const { Assets } = PIXI
-        console.log(PIXI)
-        console.log(gsap)
+        // console.log(PIXI)
+        // console.log(gsap)
         init()
 
         let anTime = 0.7 // 白色蒙层动画时间
@@ -39,36 +39,71 @@
 
             Assets.add('inImg', 'img/in.png?a=1')
             Assets.add('outImg', 'img/out1.png?a=2')
-            const assets = await Assets.load(['inImg', 'outImg'])
+            Assets.add('outImg1', 'img/out2.png')
+
+            Assets.add('line1', 'img/line1.png')
+            Assets.add('line2', 'img/line2.png')
+            Assets.add('line3', 'img/line3.png')
+            Assets.add('line4', 'img/line4.png')
+            Assets.add('line5', 'img/line5.png')
+            Assets.add('line6', 'img/line6.png')
+            Assets.add('line7', 'img/line7.png')
+            Assets.add('line8', 'img/line8.png')
+
+
+
+            const assets = await Assets.load(['inImg', 'outImg', 'outImg1', 'line1', 'line2', 'line3', 'line4', 'line5', 'line6', 'line7', 'line8'])
             const app = new PIXI.Application({ background: '#ffffff', width: document.body.offsetWidth, height: document.body.offsetHeight })
             document.getElementById('content').appendChild(app.view)
 
 
 
             const container = new PIXI.Container()
+            const container1 = new PIXI.Container()
             const inSprite = new PIXI.Sprite(assets.inImg)
             const outSprite = new PIXI.Sprite(assets.outImg)
+            const outSprite1 = new PIXI.Sprite(assets.outImg1)
+
             const graphicsArray = createGraphics()
 
 
 
             app.stage.addChild(container)
+            app.stage.addChild(container1)
             container.addChild(inSprite)
             container.addChild(outSprite)
             graphicsAn(graphicsArray, container)
 
 
             setContainer(container)
+
+
+            console.log(container)
+
+            container1.addChild(outSprite1)
+            container1.x = container.x
+            container1.y = container.y
+            container1.pivot.x = container1.width / 2
+            container1.pivot.y = container1.height / 2
+            container1.scale = { x: 0.7, y: 0.7 }
+
+
             setInSprite(inSprite, container)
 
-            ContainerEvent(container, app)
-
-            container.scale = { x: 0.7, y: 0.7 } //一定要在后面缩小，不然计算就不对了
+            ContainerEvent(container, app, container1)
+            // container.scale = { x: 0.7, y: 0.7 } //一定要在后面缩小，不然计算就不对了
             inSpriteAnmation(inSprite)
-            containerAnmation(container)
+            containerAnmation(container, container1)
 
         }
-
+        function lines(container, assets) {
+            console.log(container)
+            const line1 = new PIXI.Sprite(assets.line1)
+            line1.scale = { x: 0.8, y: 0.8 }
+            line1.x = 350
+            line1.y = 100
+            container.addChild(line1)
+        }
         function graphicsAn(graphicsArray, container) {
 
             const graphicsAnmationsShow = graphicsAnmationShow(graphicsArray)
@@ -83,9 +118,9 @@
                 graphics.alpha = 0
                 container.addChild(graphics)
                 graphics.on('mouseenter', function () {
-                    console.log('mouseenter')
+                    // console.log('mouseenter')
                     if (timer !== null) {
-                        console.log('clearTimeout')
+                        // console.log('clearTimeout')
                         clearTimeout(timer)
                     }
                     if (prev === null) {
@@ -106,9 +141,9 @@
                 })
 
                 graphics.on('mouseleave', () => {
-                    console.log('mouseleave')
+                    // console.log('mouseleave')
                     timer = setTimeout(() => {
-                        console.log('timer')
+                        // console.log('timer')
                         graphicsAnmationsHidden.forEach((graphics, i) => {
                             if (i !== prev) {
                                 graphics.restart()
@@ -121,7 +156,7 @@
 
         }
 
-        function ContainerEvent(container, app) {
+        function ContainerEvent(container, app, container1) {
             container.on('mousedown', (e) => {
                 console.log(`${parseInt(e.global.x)},${parseInt(e.global.y)}`)
             })
@@ -134,7 +169,7 @@
             const SPEED = 0.002
 
             container.on('mousedown', function (e) {
-                console.log('mousedown')
+                // console.log('mousedown')
                 stop = false
                 startPoint = { x: e.x, y: e.y }
                 startPointGlobal = {
@@ -164,7 +199,7 @@
             })
 
             container.on('mouseup', function (e) {
-                console.log('mouseup')
+                // console.log('mouseup')
                 stop = true
                 startPoint = null
             })
@@ -173,6 +208,7 @@
 
                 if (!stop) {
                     container.rotation = containerRotation
+                    container1.rotation = containerRotation
                 }
 
             });
@@ -330,7 +366,7 @@
 
         }
 
-        function containerAnmation(container) {
+        function containerAnmation(container, container1) {
             gsap.fromTo(container.scale, {
                 x: 0.1,
                 y: 0.1,
@@ -348,6 +384,7 @@
                 duration: 1.5,
                 onComplete: function () {
                     containerRotation = container.rotation
+                    container1.rotation = container.rotation
                 }
             })
         }
